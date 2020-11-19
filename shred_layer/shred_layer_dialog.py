@@ -30,8 +30,10 @@ from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
 from qgis.core import *
 from qgis.gui import *
+from qgis.utils import iface
 
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import *
 from PyQt5.QtWidgets import QSlider
 
 
@@ -125,6 +127,9 @@ class shredlayerDialog(QtWidgets.QDialog, FORM_CLASS):
         #remove layer
         QgsProject.instance().removeMapLayer(layer)
         QgsProject.instance().removeMapLayer(shredlayer)
+
+        layer = None
+        iface.mapCanvas().refresh()
 
 
         #shp一式選択
