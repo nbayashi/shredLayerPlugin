@@ -104,7 +104,10 @@ class shredlayerDialog(QtWidgets.QDialog, FORM_CLASS):
             shredGrid = processing.runAndLoadResults("qgis:creategrid",{'TYPE':2,'EXTENT':exta,'HSPACING':box.width(),'VSPACING':box.height()/shrednum,'HOVERLAY':0,'VOVERLAY':0,'CRS':layer.crs().authid(),'OUTPUT':'memory:'})
 
 
-        shredlayer =  QgsProject.instance().mapLayersByName("グリッドベクタの出力")[0]
+        #shredlayer =  QgsProject.instance().mapLayersByName("グリッドベクタの出力")[0]
+        temp_layers = QgsProject.instance().mapLayers()
+       
+        shredlayer =  temp_layers[list(temp_layers.keys())[0]]
 
 
 
