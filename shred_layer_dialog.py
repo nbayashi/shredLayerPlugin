@@ -8,7 +8,7 @@
                              -------------------
         begin                : 2020-05-06
         git sha              : $Format:%H$
-        copyright            : (C) 2020 by nishibayashi
+        copyright            : (C) 2020 by nbayashi
         email                : naoya_nstyle@hotmail.co.jp
  ***************************************************************************/
 
@@ -180,10 +180,14 @@ class shredlayerDialog(QtWidgets.QDialog, FORM_CLASS):
         input_layer = None
         iface.mapCanvas().refresh()
         iface.mapCanvas().refreshAllLayers()
+        
         # shp一式選択
         files = glob.glob(filename.split('shp')[0]+'*')
 
         # Delete
         for i in files:
-            os.remove(i)
+            try:
+                os.remove(i)
+            except PermissionError:
+                    pass
         self.close()
