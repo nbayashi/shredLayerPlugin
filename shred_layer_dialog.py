@@ -8,7 +8,7 @@
                              -------------------
         begin                : 2020-05-06
         git sha              : $Format:%H$
-        copyright            : (C) 2020 by nbayashi
+        copyright            : (C) 2024 by nbayashi
         email                : naoya_nstyle@hotmail.co.jp
  ***************************************************************************/
 
@@ -25,7 +25,6 @@
 import os
 import glob
 import random
-import qgis
 
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
@@ -33,8 +32,7 @@ from qgis.core import *
 from qgis.gui import *
 from qgis.utils import iface
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import *
+
 from PyQt5.QtWidgets import QSlider
 
 
@@ -108,7 +106,7 @@ class shredlayerDialog(QtWidgets.QDialog, FORM_CLASS):
             ), 'VSPACING': box.height()/(shrednum*10), 'HOVERLAY': 0, 'VOVERLAY': 0, 'CRS': input_layer.crs().authid(), 'OUTPUT': 'memory:'})['OUTPUT']
         else:
             shredgrid = processing.run("qgis:creategrid", {'TYPE': 2, 'EXTENT': exta, 'HSPACING': box.width(
-            )/shrednum, 'VSPACING': box.height()/shrednum, 'HOVERLAY': 0, 'VOVERLAY': 0, 'CRS': input_layer.crs().authid(), 'OUTPUT': 'memory:'})['OUTPUT']
+            )/(shrednum*2), 'VSPACING': box.height()/(shrednum*2), 'HOVERLAY': 0, 'VOVERLAY': 0, 'CRS': input_layer.crs().authid(), 'OUTPUT': 'memory:'})['OUTPUT']
 
         # run clip
         extent_list = []
@@ -117,7 +115,7 @@ class shredlayerDialog(QtWidgets.QDialog, FORM_CLASS):
             # shredgrid を順に指定
             for feat in shredgrid.getFeatures():
                 featId = feat.id()
-                selection = shredgrid.selectByExpression(
+                shredgrid.selectByExpression(
                     '$id=' + str(featId))
                 selectedlyr = shredgrid.materialize(
                     QgsFeatureRequest().setFilterFids(shredgrid.selectedFeatureIds()))
@@ -132,7 +130,7 @@ class shredlayerDialog(QtWidgets.QDialog, FORM_CLASS):
         else:
             for feat in shredgrid.getFeatures():
                 featId = feat.id()
-                selection = shredgrid.selectByExpression(
+                shredgrid.selectByExpression(
                     '$id=' + str(featId))
                 selectedlyr = shredgrid.materialize(
                     QgsFeatureRequest().setFilterFids(shredgrid.selectedFeatureIds()))
@@ -169,16 +167,14 @@ class shredlayerDialog(QtWidgets.QDialog, FORM_CLASS):
                     geom.translate(diff_xlist[i], diff_ylist[i])
                     clipped_list[i].dataProvider().changeGeometryValues(
                         {clipped_feature.id(): geom})
-                    iface.mapCanvas().refreshAllLayers()
-                    iface.mapCanvas().refresh()
                     clipped_list[i].triggerRepaint()
+            
+            iface.mapCanvas().refreshAllLayers()
 
         # remove layer
         QgsProject.instance().removeMapLayer(input_layer)
 
         # refresh
-        input_layer = None
-        iface.mapCanvas().refresh()
         iface.mapCanvas().refreshAllLayers()
         
         # shp一式選択
