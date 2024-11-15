@@ -25,6 +25,7 @@ hasProcessingProvider=no
 
 # Tags are comma separated with spaces allowed
 tags=python, vector, raster
+homepage=https://github.com/nbayashi/shredLayerPlugin
 
 category=Plugins
 icon=icon.png
