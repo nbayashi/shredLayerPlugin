@@ -84,6 +84,10 @@ class shredlayerDialog(QtWidgets.QDialog, FORM_CLASS):
         input_layer = self.layer_ComboBox.currentLayer()
         shrednum = self.horizontalSlider.value()
 
+        if not input_layer:
+            QtWidgets.QMessageBox.warning(self, "Error", "No layer selected!")
+            return
+
         (Dir, filename) = os.path.split(
             input_layer.dataProvider().dataSourceUri())
         os.chdir(Dir)
@@ -101,7 +105,7 @@ class shredlayerDialog(QtWidgets.QDialog, FORM_CLASS):
         if self.radioButton_vertical.isChecked() == True:
             shredgrid = processing.run("qgis:creategrid", {'TYPE': 2, 'EXTENT': exta, 'HSPACING': box.width(
             )/(shrednum*10), 'VSPACING': box.height(), 'HOVERLAY': 0, 'VOVERLAY': 0, 'CRS': input_layer.crs().authid(), 'OUTPUT': 'memory:'})['OUTPUT']
-        elif self.radioButton_horizonal.isChecked() == True:
+        elif self.radioButton_horizontal.isChecked() == True:
             shredgrid = processing.run("qgis:creategrid", {'TYPE': 2, 'EXTENT': exta, 'HSPACING': box.width(
             ), 'VSPACING': box.height()/(shrednum*10), 'HOVERLAY': 0, 'VOVERLAY': 0, 'CRS': input_layer.crs().authid(), 'OUTPUT': 'memory:'})['OUTPUT']
         else:
@@ -169,21 +173,25 @@ class shredlayerDialog(QtWidgets.QDialog, FORM_CLASS):
                         {clipped_feature.id(): geom})
                     clipped_list[i].triggerRepaint()
             
-            iface.mapCanvas().refreshAllLayers()
+        # remove grid   
+        QgsProject.instance().removeMapLayer(shredgrid)
+
 
         # remove layer
         QgsProject.instance().removeMapLayer(input_layer)
 
         # refresh
         iface.mapCanvas().refreshAllLayers()
-        
-        # shp一式選択
-        files = glob.glob(filename.split('shp')[0]+'*')
 
+        #self.remove_file(filename)
+        self.close()
+        
+    def remove_file(self, filename):
+        # pickup layer
+        files = glob.glob(filename.split('shp')[0]+'*')
         # Delete
         for i in files:
             try:
                 os.remove(i)
             except PermissionError:
                     pass
-        self.close()
