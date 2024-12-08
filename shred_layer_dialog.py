@@ -183,7 +183,7 @@ class shredlayerDialog(QtWidgets.QDialog, FORM_CLASS):
         # refresh
         iface.mapCanvas().refreshAllLayers()
 
-        #self.remove_file(filename)
+        self.remove_file(filename)
         self.close()
         
     def remove_file(self, filename):

@@ -74,7 +74,7 @@
       <set>Qt::ImhNone</set>
      </property>
      <property name="title">
-      <string>Option (Only ventor layer)</string>
+      <string>Option (Only vector layer)</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -182,7 +182,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Horizonal</string>
+         <string>Horizontal</string>
         </property>
        </widget>
       </item>
